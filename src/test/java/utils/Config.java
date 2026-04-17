@@ -2,11 +2,26 @@ package utils;
 
 public class Config {
 
-    public static final String BASE_URL = "https://stellarburgers.education-services.ru";
+    public static final String BASE_URL = "https://stellarburgers.education-services.ru/";
 
-    public static final String YANDEX_BROWSER_PATH =
-            System.getProperty(
-                    "yandex.path",
-                    "C:\\Program Files\\Yandex\\YandexBrowser\\Application\\browser.exe"
-            );
+    private Config() {
+    }
+
+    public static String getBrowser() {
+        return System.getProperty("browser", "chrome");
+    }
+
+    public static String getYandexBrowserBinary() {
+        String propertyValue = System.getProperty("yandex.browser.binary");
+        if (propertyValue != null && !propertyValue.isBlank()) {
+            return propertyValue.trim();
+        }
+
+        String envValue = System.getenv("YANDEX_BROWSER_BINARY");
+        if (envValue != null && !envValue.isBlank()) {
+            return envValue.trim();
+        }
+
+        return null;
+    }
 }

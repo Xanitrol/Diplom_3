@@ -1,27 +1,28 @@
 package base;
 
-import api.UserClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
+import pages.MainPage;
+import utils.Config;
 import utils.DriverFactory;
 
 public class BaseTest {
 
     protected WebDriver driver;
-    protected UserClient userClient;
+    protected MainPage mainPage;
+    private DriverFactory factory;
 
     @BeforeEach
     public void setUp() {
-        DriverFactory factory = new DriverFactory();
-        factory.setUpDriver();
-        driver = DriverFactory.getDriver();
-        userClient = new UserClient();
+        factory = new DriverFactory();
+        driver = factory.getDriver();
+        driver.get(Config.BASE_URL);
+        mainPage = new MainPage(driver);
     }
 
     @AfterEach
     public void tearDown() {
-        DriverFactory factory = new DriverFactory();
         factory.tearDown();
     }
 }

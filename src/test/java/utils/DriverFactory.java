@@ -1,41 +1,41 @@
 package utils;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class DriverFactory {
 
-    protected static WebDriver driver;
+    private WebDriver driver;
 
-    @BeforeEach
-    public void setUpDriver() {
-        String browser = System.getProperty("browser", "chrome");
+    public WebDriver getDriver() {
+        if (driver == null) {
+            String browser = Config.getBrowser();
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--window-size=1920,1080");
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--window-size=1920,1080");
 
-        if ("yandex".equalsIgnoreCase(browser)) {
-            options.setBinary("C:\\Program Files\\Yandex\\YandexBrowser\\Application\\browser.exe");
-            WebDriverManager.chromedriver().browserVersion("144").setup();
-        } else {
-            WebDriverManager.chromedriver().setup();
+            if ("yandex".equalsIgnoreCase(browser)) {
+                String yandexBinary = Config.getYandexBrowserBinary();
+
+                if (yandexBinary == null || yandexBinary.isBlank()) {
+                    throw new IllegalArgumentException("Не указан путь к Yandex Browser");
+                }
+
+                options.setBinary(yandexBinary.trim());
+            }
+
+            // 🔥 ВАЖНО — Selenium сам подтянет нужный драйвер
+            driver = new ChromeDriver(options);
         }
 
-        driver = new ChromeDriver(options);
+        return driver;
     }
 
-    @AfterEach
     public void tearDown() {
         if (driver != null) {
             driver.quit();
+            driver = null;
         }
-    }
-
-    public static WebDriver getDriver() {
-        return driver;
     }
 }
